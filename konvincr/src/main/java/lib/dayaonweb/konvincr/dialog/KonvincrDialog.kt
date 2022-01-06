@@ -9,11 +9,21 @@ import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
+import com.google.android.exoplayer2.PlaybackException
+import com.google.android.exoplayer2.Player.Listener
 import lib.dayaonweb.konvincr.databinding.RootDialogBinding
 
 private const val TAG = "KonvincrDialog"
 
-class KonvincrDialog : DialogFragment(){
+class KonvincrDialog : DialogFragment(), Listener {
+
+    override fun onPlayerError(error: PlaybackException) {
+        val throwable = error.cause
+        val errorCode = error.errorCode
+        val errorCodename = error.errorCodeName
+        val msg = error.message
+        Log.e(TAG, "onPlayerError: $errorCode\t$errorCodename\t$msg", throwable)
+    }
 
     private var _binding: RootDialogBinding? = null
     private val binding get() = _binding!!

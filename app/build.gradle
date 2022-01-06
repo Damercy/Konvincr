@@ -37,7 +37,10 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.4.0'
     implementation 'com.google.android.material:material:1.4.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.2'
-    implementation project(":konvincr")
+    implementation "com.google.android.exoplayer:exoplayer-core:2.16.1"
+    implementation "com.google.android.exoplayer:exoplayer-ui:2.16.1"
+    implementation "com.google.android.exoplayer:exoplayer-hls:2.16.1"
+    api project(":konvincr")
 
     // test
     testImplementation 'junit:junit:4.13.2'

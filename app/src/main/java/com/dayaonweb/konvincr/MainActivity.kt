@@ -30,6 +30,6 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         private const val INVALID_URL = ""
-        private const val VALID_URL = "https://www.youtube.com/watch?v=d15DP5zqnYE"
+        private const val VALID_URL = "https://cdn.videvo.net/videvo_files/video/free/2014-12/large_watermarked/Metal_Wind_Chimes_at_Sunset_preview.mp4"
     }
 }
