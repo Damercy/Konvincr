@@ -24,14 +24,6 @@ private const val TAG = "KonvincrDialog"
 
 class KonvincrDialog : DialogFragment(), Listener {
 
-    override fun onPlayerError(error: PlaybackException) {
-        val throwable = error.cause
-        val errorCode = error.errorCode
-        val errorCodename = error.errorCodeName
-        val msg = error.message
-        Snackbar.make(requireView(), errorCodename, Snackbar.LENGTH_LONG).show()
-        Log.e(TAG, "onPlayerError: $errorCode\t$errorCodename\t$msg", throwable)
-    }
 
     private var _binding: RootDialogBinding? = null
     private val binding get() = _binding!!
@@ -41,9 +33,12 @@ class KonvincrDialog : DialogFragment(), Listener {
     private lateinit var videoUrl: String
 
     // Optional
-    private var titleText = "Go to settings to enable permissions"
-    private var subtitleText =
-        "Please grant XYZ permission in the next screen as shown in above video"
+    private var titleText = "Grant permission"
+    private var bottomText = "Allow permissions in settings"
+    private var buttonText = "Settings"
+    private var onButtonClick = {
+        openSettingsScreen()
+    }
 
     companion object {
         fun newInstance(url: String): KonvincrDialog {
@@ -55,17 +50,27 @@ class KonvincrDialog : DialogFragment(), Listener {
 
     // Accessible functions
 
+    fun setButtonText(text: String) {
+        buttonText = text
+    }
+
     fun setTitleText(text: String) {
         titleText = text
     }
 
-    fun setSubtitleText(text: String) {
-        subtitleText = text
+    fun setBottomText(text: String) {
+        bottomText = text
     }
+
+    fun setButtonAction(action: () -> Unit) {
+        onButtonClick = action
+    }
+
 
     fun prepareMediaItem(url: String? = null) {
         val mediaItem = MediaItem.fromUri(Uri.parse(url ?: videoUrl))
         player?.apply {
+            addListener(this@KonvincrDialog)
             setMediaItem(mediaItem)
             prepare()
             play()
@@ -103,7 +108,7 @@ class KonvincrDialog : DialogFragment(), Listener {
                 dismiss()
             }
             btnSettings.setOnClickListener {
-                openSettingsScreen()
+                onButtonClick.invoke()
             }
         }
     }
@@ -117,7 +122,11 @@ class KonvincrDialog : DialogFragment(), Listener {
     }
 
     private fun initViews() {
-        binding.tvTitle.text = titleText
+        binding.apply {
+            tvTitle.text = bottomText
+            btnSettings.text = buttonText
+            toolbar.title = titleText
+        }
     }
 
     private fun initPlayer() {
@@ -125,7 +134,20 @@ class KonvincrDialog : DialogFragment(), Listener {
             .build()
         prepareMediaItem()
         binding.playerView.player = player
-        binding.playerView.controllerShowTimeoutMs = 1000
+        binding.playerView.apply {
+            controllerShowTimeoutMs = 1000
+            setShowPreviousButton(false)
+            setShowNextButton(false)
+        }
+    }
+
+    override fun onPlayerError(error: PlaybackException) {
+        val throwable = error.cause
+        val errorCode = error.errorCode
+        val errorCodename = error.errorCodeName
+        val msg = error.message
+        Snackbar.make(requireView(), errorCodename, Snackbar.LENGTH_LONG).show()
+        Log.e(TAG, "onPlayerError: $errorCode\t$errorCodename\t$msg", throwable)
     }
 
     override fun onStop() {
