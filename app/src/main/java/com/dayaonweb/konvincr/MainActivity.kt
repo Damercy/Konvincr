@@ -23,13 +23,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun openDialog() {
-        val dialog = KonvincrDialog.newInstance(url = VALID_URL)
+        val dialog = KonvincrDialog.newInstance(url = INVALID_URL)
         dialog.show(supportFragmentManager, null)
     }
 
 
     companion object {
-        private const val INVALID_URL = ""
-        private const val VALID_URL = "https://cdn.videvo.net/videvo_files/video/free/2014-12/large_watermarked/Metal_Wind_Chimes_at_Sunset_preview.mp4"
+        private const val INVALID_URL = "https://assets.mixkit.co/videos/preview/mixkit-hand-holding-mobile-phone-with-greenscreen-8839-large.mp4"
+        private const val VALID_URL = "https://media.istockphoto.com/videos/portrait-of-talented-young-female-artist-dirty-with-paint-wearing-video-id1180202628"
     }
 }

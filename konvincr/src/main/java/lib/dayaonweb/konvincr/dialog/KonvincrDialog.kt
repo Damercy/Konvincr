@@ -10,8 +10,15 @@ import androidx.fragment.app.DialogFragment
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.PlaybackException
+import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.Player.Listener
+import com.google.android.exoplayer2.source.LoopingMediaSource
+import com.google.android.exoplayer2.util.RepeatModeUtil
+import com.google.android.material.snackbar.Snackbar
 import lib.dayaonweb.konvincr.databinding.RootDialogBinding
+import android.content.Intent
+import android.provider.Settings
+
 
 private const val TAG = "KonvincrDialog"
 
@@ -22,6 +29,7 @@ class KonvincrDialog : DialogFragment(), Listener {
         val errorCode = error.errorCode
         val errorCodename = error.errorCodeName
         val msg = error.message
+        Snackbar.make(requireView(), errorCodename, Snackbar.LENGTH_LONG).show()
         Log.e(TAG, "onPlayerError: $errorCode\t$errorCodename\t$msg", throwable)
     }
 
@@ -69,6 +77,11 @@ class KonvincrDialog : DialogFragment(), Listener {
         setStyle(STYLE_NORMAL, android.R.style.Theme_Black_NoTitleBar_Fullscreen)
     }
 
+    override fun onStart() {
+        super.onStart()
+        initPlayer()
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -80,15 +93,27 @@ class KonvincrDialog : DialogFragment(), Listener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initPlayer()
         initViews()
         attachListeners()
     }
 
     private fun attachListeners() {
-        binding.toolbar.setNavigationOnClickListener {
-            dismiss()
+        binding.apply {
+            toolbar.setNavigationOnClickListener {
+                dismiss()
+            }
+            btnSettings.setOnClickListener {
+                openSettingsScreen()
+            }
         }
+    }
+
+    private fun openSettingsScreen() {
+        val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            data = Uri.fromParts("package", requireContext().packageName, null)
+        }
+        startActivity(intent)
     }
 
     private fun initViews() {
@@ -100,13 +125,16 @@ class KonvincrDialog : DialogFragment(), Listener {
             .build()
         prepareMediaItem()
         binding.playerView.player = player
+        binding.playerView.controllerShowTimeoutMs = 1000
     }
 
-
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onStop() {
+        super.onStop()
+        binding.playerView.player = null
         player?.release()
+        player = null
     }
+
 
     override fun onDestroyView() {
         super.onDestroyView()
