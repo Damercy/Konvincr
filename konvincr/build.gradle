@@ -11,7 +11,7 @@ android {
         minSdk 21
         targetSdk 32
         versionCode 1
-        versionName "00.01.00"
+        versionName "0.1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
@@ -54,9 +54,9 @@ afterEvaluate {
         publications{
             release(MavenPublication){
                 from components.release
-                groupId = 'com.github.damercy'
+                groupId = 'com.github.Damercy'
                 artifactId = 'konvincr'
-                version = '00.01.00'
+                version = '0.1.0'
             }
         }
     }
