@@ -1,7 +1,9 @@
 package lib.dayaonweb.konvincr.dialog
 
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.provider.Settings
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -10,14 +12,9 @@ import androidx.fragment.app.DialogFragment
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.PlaybackException
-import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.Player.Listener
-import com.google.android.exoplayer2.source.LoopingMediaSource
-import com.google.android.exoplayer2.util.RepeatModeUtil
 import com.google.android.material.snackbar.Snackbar
 import lib.dayaonweb.konvincr.databinding.RootDialogBinding
-import android.content.Intent
-import android.provider.Settings
 
 
 private const val TAG = "KonvincrDialog"
@@ -67,6 +64,12 @@ class KonvincrDialog : DialogFragment(), Listener {
     }
 
 
+    /**
+     * Add medialUrl to play in player. Calling
+     * prepareMediaItem() multiple times will append
+     * the added url & act like a playlist.
+     * @param url A valid url resource of a video. YT urls not supported.
+     */
     fun prepareMediaItem(url: String? = null) {
         val mediaItem = MediaItem.fromUri(Uri.parse(url ?: videoUrl))
         player?.apply {
